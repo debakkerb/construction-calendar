@@ -15,34 +15,38 @@ var (
 	tranches      = [...]int{60, 135, 150, 165, 180, 278, 350, 410, 480}
 	restDays      = map[time.Time]bool{}
 	debugLogLevel = false
+	startDate     = time.Time{}
 )
 
 const DATE_FORMAT = "Monday, 02/01/2006"
 
-func init() {
-	startDate := flag.String("startdate", "03/10/2022", "Date when construction starts")
+func main() {
+	inputStartDate := flag.String("startdate", "03/10/2022", "Date when construction starts")
 	bankHolidayFileLocation := flag.String("bankholiday", "bankholidays.txt", "Location of the file that contains bank holidays")
 	restDaysFileLocation := flag.String("restdays", "restdays.txt", "Location of the file that contains restdays")
 	debugEnabled := flag.String("debug", "false", "Enable DEBUG logging")
+
 	flag.Parse()
 
-	_, err := time.Parse("02/01/2006", *startDate)
+	startDate, err := time.Parse("02/01/2006", *inputStartDate)
 	if err != nil {
 		log.Fatalf("Error while parsing start date, not in the correct format (dd/MM/YYYY): %v", err)
 	}
 
-	readSpecialDates(*bankHolidayFileLocation)
-	readSpecialDates(*restDaysFileLocation)
+	err = readSpecialDates(*bankHolidayFileLocation)
+	if err != nil {
+		log.Fatalf("Error while reading bank holidays file: %v", err)
+	}
+
+	err = readSpecialDates(*restDaysFileLocation)
+	if err != nil {
+		log.Fatalf("Error while reading rest days file: %v\n", err)
+	}
 
 	debugLogLevel, err = strconv.ParseBool(*debugEnabled)
 	if err != nil {
 		log.Fatalf("Error while parsing debug logging: %v\n", err)
 	}
-}
-
-func main() {
-	startDate := time.Date(2022, 10, 3, 0, 0, 0, 0, time.UTC)
-
 	writer := tabwriter.NewWriter(os.Stdout, 1, 1, 1, ' ', 0)
 
 	for counter, tranch := range tranches {
