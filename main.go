@@ -22,8 +22,8 @@ const DATE_FORMAT = "Monday, 02/01/2006"
 
 func main() {
 	inputStartDate := flag.String("startdate", "03/10/2022", "Date when construction starts")
-	bankHolidayFileLocation := flag.String("bankholiday", "bankholidays.txt", "Location of the file that contains bank holidays")
-	restDaysFileLocation := flag.String("restdays", "restdays.txt", "Location of the file that contains restdays")
+	bankHolidayFileLocation := flag.String("bankholiday", "./input/bankholidays.txt", "Location of the file that contains bank holidays")
+	restDaysFileLocation := flag.String("restdays", "./input/restdays.txt", "Location of the file that contains restdays")
 	debugEnabled := flag.String("debug", "false", "Enable DEBUG logging")
 
 	flag.Parse()
